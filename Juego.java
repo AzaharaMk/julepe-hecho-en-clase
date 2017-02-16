@@ -149,7 +149,8 @@ public class Juego
         
         for(int cont = 0; cont <5; cont++)
         {
-                //Solicitar por teclado la carta que quiere lanzar el jugador humano
+  
+            //Solicitar por teclado la carta que quiere lanzar el jugador humano
             String cartaSolicitada;
             jugadores[0].verCartasJugador();
             Scanner entrada= new Scanner(System.in); 
@@ -158,7 +159,14 @@ public class Juego
             
                 //El jugador humano es el primero en tirar.
             Carta cartaTirada = jugadores[0].tirarCarta(cartaSolicitada);
-            
+            while(cartaTirada == null)
+            {
+                System.out.println("Introduce una carta correcta");
+                System.out.println("Elige Carta a lanzar:");
+                cartaSolicitada = entrada.nextLine();
+                cartaTirada = jugadores[0].tirarCarta(cartaSolicitada);;
+            }
+           
                 // Creamos la baza
             Baza baza = new Baza(jugadores.length,paloQuePinta);
             
