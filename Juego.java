@@ -13,7 +13,6 @@ public class Juego
     private Mazo mazo;
     private int paloQuePinta;
 
-
     /**
      * Constructor de la clase Juego
      *
@@ -55,11 +54,10 @@ public class Juego
             System.out.println(jugadores[i].getNombre());
         }
         System.out.println();
-        
+
         jugar();
     }
-    
-    
+
     /**
      * Método que reparte 5 cartas a cada uno de los jugadores presentes en
      * la partida y elige un palo para que pinte.
@@ -96,8 +94,6 @@ public class Juego
 
         return paloQuePinta;           
     }
-   
-
 
     /**
      * Devuelve la posición del jugador cuyo nombre se especifica como
@@ -106,24 +102,23 @@ public class Juego
      * @param nombre El nombre del jugador a buscar
      * @return La posición del jugador buscado o -1 en caso de no hallarlo.
      */
-   public int encontrarPosicionJugadorPorNombre(String nombre)
+    public int encontrarPosicionJugadorPorNombre(String nombre)
     {
         int posicionJugador = -1;
         int contador = 0;    
-        
-        while(contador < jugadores.length)
+
+        while(contador < jugadores.length && posicionJugador == -1)
+        {
+            if (nombre.equals(jugadores[contador].getNombre()))
             {
-                if (nombre.equals(jugadores[contador].getNombre()))
-                {
                 posicionJugador = contador;
-                }
-                contador++;
             }
+            contador++;
+        }
         return posicionJugador;
-        
+
     }
-    
-        
+
     /**
      * Desarrolla una partida de julepe teniendo en cuenta que el mazo y los
      * jugadores ya han sido creados. 
@@ -147,21 +142,65 @@ public class Juego
      *    bazas) o "no es julepe".
      *
      */
-    private void jugar()
+    public void jugar()
     {
-
+            //reparte las cartas a los jugadores
+        repartir();
+        
+        for(int cont = 0; cont <5; cont++)
+        {
+                //Solicitar por teclado la carta que quiere lanzar el jugador humano
+            String cartaSolicitada;
+            jugadores[0].verCartasJugador();
+            Scanner entrada= new Scanner(System.in); 
+            System.out.println("Elige Carta a lanzar:");
+            cartaSolicitada = entrada.nextLine();
+            
+                //El jugador humano es el primero en tirar.
+            Carta cartaTirada = jugadores[0].tirarCarta(cartaSolicitada);
+            
+                // Creamos la baza
+            Baza baza = new Baza(jugadores.length,paloQuePinta);
+            
+                //A�ade la carta del jugador Humano a la baza
+            baza.addCarta(cartaTirada,jugadores[0].getNombre());
+            
+                //recorre el array
+            for (int i = 1; i < jugadores.length; i++)
+            {
+                //Lanzar una carta por cada jugador no Humano.
+                 Carta cartaAleatoria =jugadores[i].tirarCartaAleatoria();
+               
+                //Actualiza la baza.
+                baza.addCarta(cartaAleatoria,jugadores[i].getNombre());
+            }
+           
+           
+                //Darle la baza al jugador que la ha ganado. 
+            String nombreGanador = baza.nombreJugadorQueVaGanandoLaBaza();
+            int posicionGanador =encontrarPosicionJugadorPorNombre(nombreGanador);
+            jugadores[posicionGanador].addBaza(baza);
+       
+                //Informar de que jugador ha ganado la baza.
+            System.out.println("Ha ganado la baza:"+nombreGanador);
+        }
+         
+            //Informar de cuantas bazas ha ganado el jugador humano.
+                int bazasGanadas = jugadores[0].getNumeroBazasGanadas();
+                System.out.println("Has ganado "+bazasGanadas+ " bazas");
+                
+            //Indicar si el jugador humano "es julepe" (ha ganado menos de dos bazas) o "no es julepe".
+                if (bazasGanadas < 2)
+                {
+                    System.out.println("Soy Julepe");
+                }
+                else
+                {
+                    System.out.println(" No soy Julepe");
+                }
         
     }    
 }
-
-
-
-
-
-
-
-
-
 
 
 
